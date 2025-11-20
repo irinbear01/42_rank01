@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_print_ptr.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: khaiamsr <khaiamsr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/20 14:40:38 by khaiamsr          #+#    #+#             */
+/*   Updated: 2025/11/20 15:07:02 by khaiamsr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_printf.h"
 
 static int	ft_ptr_rec(unsigned long n)
@@ -17,11 +29,10 @@ int	ft_print_ptr(void *ptr)
 	int				count;
 
 	addr = (unsigned long)ptr;
+	if (addr == 0)
+		return (ft_print_str("(nil)"));
 	count = 0;
 	count += ft_print_str("0x");
-	if (addr == 0)
-		count += ft_print_char('0');
-	else
-		count += ft_ptr_rec(addr);
+	count += ft_ptr_rec(addr);
 	return (count);
 }
