@@ -1,69 +1,107 @@
 #include "get_next_line.h"
 
-size_t	ft_strlen(char *s)
+size_t	ft_strlen(const char *s)
 {
-	size_t	i;
+	size_t	len;
 
-	i = 0;
 	if (!s)
 		return (0);
-	while (s[i] != '\0')
-		i++;
-	return (i);
+	len = 0;
+	while (s[len])
+		len++;
+	return (len);
 }
 
-char	*ft_strchr(char *s, int c)
+char	*ft_strchr(const char *s, int c)
 {
-	int		i;
-	char	ch;
-
 	if (!s)
 		return (NULL);
-	i = 0;
-	ch = (char)c;
-	while (s[i] != '\0')
-	{
-		if (s[i] == ch)
-			return (&s[i]);
-		i++;
-	}
-	if (ch == '\0')
-		return (&s[i]);
+	while (*s && *s != (char)c)
+		s++;
+	if (*s == (char)c)
+		return ((char *)s);
 	return (NULL);
 }
 
-char	*ft_strjoin(char *s1, char *s2)
+char	*gnl_strjoin(char *s1, char const *s2)
 {
+	size_t	len1;
+	size_t	len2;
 	char	*str;
 	size_t	i;
-	size_t	j;
 
-	if (!s1)
-	{
-		s1 = (char *)malloc(1);
-		if (!s1)
-			return (NULL);
-		s1[0] = '\0';
-	}
-	str = (char *)malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	str = (char *)malloc(len1 + len2 + 1);
 	if (!str)
-	{
-		free(s1);
 		return (NULL);
-	}
 	i = 0;
-	while (s1[i])
+	while (i < len1)
 	{
 		str[i] = s1[i];
 		i++;
 	}
-	j = 0;
-	while (s2[j])
+	while (i - len1 < len2)
 	{
-		str[i + j] = s2[j];
-		j++;
+		str[i] = s2[i - len1];
+		i++;
 	}
-	str[i + j] = '\0';
+	str[i] = '\0';
 	free(s1);
 	return (str);
+}
+
+char	*gnl_get_line(char *stash)
+{
+	size_t	len;
+	size_t	i;
+	char	*line;
+
+	if (!stash || !*stash)
+		return (NULL);
+	len = 0;
+	while (stash[len] && stash[len] != '\n')
+		len++;
+	if (stash[len] == '\n')
+		len++;
+	line = (char *)malloc(len + 1);
+	if (!line)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		line[i] = stash[i];
+		i++;
+	}
+	line[i] = '\0';
+	return (line);
+}
+
+char	*gnl_get_rest(char *stash)
+{
+	size_t	len;
+	size_t	i;
+	size_t	j;
+	char	*rest;
+
+	len = ft_strlen(stash);
+	i = 0;
+	while (stash[i] && stash[i] != '\n')
+		i++;
+	if (stash[i] == '\n')
+		i++;
+	if (i >= len)
+		return (NULL);
+	rest = (char *)malloc(len - i + 1);
+	if (!rest)
+		return (NULL);
+	j = 0;
+	while (stash[i])
+	{
+		rest[j] = stash[i];
+		i++;
+		j++;
+	}
+	rest[j] = '\0';
+	return (rest);
 }
